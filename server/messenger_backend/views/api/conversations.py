@@ -24,9 +24,7 @@ class Conversations(APIView):
             conversations = (
                 Conversation.objects.filter(Q(user1=user_id) | Q(user2=user_id))
                 .prefetch_related(
-                    Prefetch(
-                        "messages", queryset=Message.objects.order_by("createdAt")
-                    )
+                    Prefetch("messages", queryset=Message.objects.order_by("createdAt"))
                 )
                 .all()
             )

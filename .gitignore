@@ -78,6 +78,7 @@ celerybeat-schedule.*
 
 # Environments 
 server/.env
+.env
 .venv 
 env/ 
 venv/ 

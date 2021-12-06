@@ -55,7 +55,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "messenger_backend.middleware.auth_middleware.AuthMiddleware",
-    'request_logging.middleware.LoggingMiddleware',
+    "request_logging.middleware.LoggingMiddleware",
 ]
 
 REST_FRAMEWORK = {
@@ -65,19 +65,18 @@ REST_FRAMEWORK = {
 }
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
-
     },
-    'loggers': {
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': False,
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
         },
     },
 }

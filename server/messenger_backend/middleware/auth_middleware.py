@@ -25,7 +25,7 @@ class AuthMiddleware:
         try:
             decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
             user = User.get_by_id(decoded["id"])
-            
+
         except (jwt.ExpiredSignatureError, jwt.InvalidSignatureError, jwt.DecodeError):
             pass
 

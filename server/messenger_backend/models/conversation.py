@@ -11,7 +11,10 @@ class Conversation(utils.CustomModel):
         User, on_delete=models.CASCADE, db_column="user1Id", related_name="+"
     )
     user2 = models.ForeignKey(
-        User, on_delete=models.CASCADE, db_column="user2Id", related_name="+", 
+        User,
+        on_delete=models.CASCADE,
+        db_column="user2Id",
+        related_name="+",
     )
     createdAt = models.DateTimeField(auto_now_add=True, db_index=True)
     updatedAt = models.DateTimeField(auto_now=True)

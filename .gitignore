@@ -21,7 +21,8 @@ media
 .idea/**/dynamic.xml 
 .idea/**/uiDesigner.xml 
 .idea/**/gradle.xml 
-.idea/**/libraries 
+.idea/**/libraries
+.idea
 *.iws /out/ 
 
 # Python # 
@@ -76,7 +77,8 @@ celerybeat-schedule.*
 *.sage.py 
 
 # Environments 
-.env 
+server/.env
+.env
 .venv 
 env/ 
 venv/ 

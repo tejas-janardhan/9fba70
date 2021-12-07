@@ -2,8 +2,8 @@ from typing import List
 
 from django.db.models import Model
 
-class CustomModel(Model):
 
+class CustomModel(Model):
     class Meta:
         abstract = True
 

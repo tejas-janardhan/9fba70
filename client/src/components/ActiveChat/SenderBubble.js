@@ -26,8 +26,8 @@ const useStyles = makeStyles(() => ({
     borderRadius: "10px 10px 0 10px",
   },
   avatar: {
-    height: 20,
-    width: 20,
+    height: 23,
+    width: 23,
     marginTop: 5,
     marginBottom: 5,
   },

@@ -24,6 +24,10 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: -0.17,
     fontWeight: 550,
   },
+  chip: {
+    marginTop: "2.5%",
+    marginRight: "2%",
+  },
 }));
 
 const ChatContent = (props) => {
@@ -49,7 +53,13 @@ const ChatContent = (props) => {
         </Typography>
       </Box>
       {unreadMessageCount > 0 ? (
-        <Chip item label={unreadMessageCount} size="small" color={"primary"} />
+        <Chip
+          item
+          label={unreadMessageCount}
+          size="small"
+          color={"primary"}
+          className={classes.chip}
+        />
       ) : null}
     </Grid>
   );

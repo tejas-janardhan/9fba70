@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Chip, Grid, Typography} from "@material-ui/core";
+import { Box, Chip, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -18,12 +18,12 @@ const useStyles = makeStyles((theme) => ({
     color: "#9CADC8",
     letterSpacing: -0.17,
   },
-  boldPreviewText:{
+  boldPreviewText: {
     fontSize: 12,
     color: "#000000",
     letterSpacing: -0.17,
     fontWeight: 550,
-  }
+  },
 }));
 
 const ChatContent = (props) => {
@@ -38,11 +38,19 @@ const ChatContent = (props) => {
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={unreadMessageCount > 0 ?classes.boldPreviewText:classes.previewText}>
+        <Typography
+          className={
+            unreadMessageCount > 0
+              ? classes.boldPreviewText
+              : classes.previewText
+          }
+        >
           {latestMessageText}
         </Typography>
       </Box>
-      {unreadMessageCount > 0 ?<Chip item label={unreadMessageCount} size="small" color={'primary'}/>:null}
+      {unreadMessageCount > 0 ? (
+        <Chip item label={unreadMessageCount} size="small" color={"primary"} />
+      ) : null}
     </Grid>
   );
 };

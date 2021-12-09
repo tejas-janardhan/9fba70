@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 class Messages(APIView):
     """expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists
-    yet) """
+    yet)"""
 
     def post(self, request):
         try:

@@ -5,7 +5,8 @@ import {
   removeOfflineUserFromStore,
   addMessageToStore,
   resetUnreadMessageCountInStore,
-  updateLastReadMessageInStore, increaseUnreadMessageCountInStore
+  updateLastReadMessageInStore,
+  increaseUnreadMessageCountInStore,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -17,9 +18,9 @@ const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
-const SET_CONVERSATION_READ = "SET_CONVERSATION_READ"
-const SET_LAST_READ_MESSAGE = "SET_LAST_READ_MESSAGE"
-const INC_UNREAD_MESSAGE_COUNT = "INC_UNREAD_MESSAGE_COUNT"
+const SET_CONVERSATION_READ = "SET_CONVERSATION_READ";
+const SET_LAST_READ_MESSAGE = "SET_LAST_READ_MESSAGE";
+const INC_UNREAD_MESSAGE_COUNT = "INC_UNREAD_MESSAGE_COUNT";
 
 // ACTION CREATORS
 
@@ -76,22 +77,22 @@ export const setConversationRead = (conversationId) => {
   return {
     type: SET_CONVERSATION_READ,
     conversationId,
-  }
-}
+  };
+};
 
 export const setLastReadMessage = (lastReadMessageOtherUser) => {
   return {
     type: SET_LAST_READ_MESSAGE,
-    lastReadMessageOtherUser
-  }
-}
+    lastReadMessageOtherUser,
+  };
+};
 
 export const incrementUnreadMessageCount = (conversationId) => {
   return {
     type: INC_UNREAD_MESSAGE_COUNT,
-    conversationId
-  }
-}
+    conversationId,
+  };
+};
 
 // REDUCER
 
@@ -118,11 +119,14 @@ const reducer = (state = [], action) => {
         action.payload.newMessage
       );
     case SET_CONVERSATION_READ:
-      return resetUnreadMessageCountInStore(state, action.conversationId)
+      return resetUnreadMessageCountInStore(state, action.conversationId);
     case SET_LAST_READ_MESSAGE:
-      return updateLastReadMessageInStore(state, action.lastReadMessageOtherUser)
+      return updateLastReadMessageInStore(
+        state,
+        action.lastReadMessageOtherUser
+      );
     case INC_UNREAD_MESSAGE_COUNT:
-      return increaseUnreadMessageCountInStore(state, 1, action.conversationId)
+      return increaseUnreadMessageCountInStore(state, 1, action.conversationId);
     default:
       return state;
   }

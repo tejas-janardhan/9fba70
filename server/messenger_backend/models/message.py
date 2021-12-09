@@ -19,6 +19,4 @@ class Message(utils.CustomModel):
 
     @staticmethod
     def get_none_or_dict(message, message_fields: List[str] = None):
-        if message is not None:
-            message = message.to_dict(message_fields)
-        return message
+        return message.to_dict(message_fields) if message is not None else None

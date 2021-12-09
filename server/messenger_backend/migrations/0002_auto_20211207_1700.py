@@ -7,18 +7,30 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('messenger_backend', '0001_initial'),
+        ("messenger_backend", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='conversation',
-            name='last_read_message_user1',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='messenger_backend.message'),
+            model_name="conversation",
+            name="last_read_message_user1",
+            field=models.ForeignKey(
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="messenger_backend.message",
+            ),
         ),
         migrations.AddField(
-            model_name='conversation',
-            name='last_read_message_user2',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='messenger_backend.message'),
+            model_name="conversation",
+            name="last_read_message_user2",
+            field=models.ForeignKey(
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="messenger_backend.message",
+            ),
         ),
     ]

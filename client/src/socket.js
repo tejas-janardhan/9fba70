@@ -3,9 +3,9 @@ import store from "./store";
 import {
   removeOfflineUser,
   addOnlineUser,
-  setLastReadMessage
+  setLastReadMessage,
 } from "./store/conversations";
-import {processIncomingMessage} from "./store/utils/thunkCreators";
+import { processIncomingMessage } from "./store/utils/thunkCreators";
 
 const socket = io(window.location.origin);
 
@@ -19,11 +19,18 @@ socket.on("connect", () => {
     store.dispatch(removeOfflineUser(id));
   });
   socket.on("new-message", async (data) => {
-    store.dispatch(processIncomingMessage(store.getState().activeConversation, data.message, data.sender, data.isNewConversation))
+    store.dispatch(
+      processIncomingMessage(
+        store.getState().activeConversation,
+        data.message,
+        data.sender,
+        data.isNewConversation
+      )
+    );
   });
   socket.on("conversation-read", (data) => {
-    store.dispatch(setLastReadMessage(data.lastReadMessageOtherUser))
-  })
+    store.dispatch(setLastReadMessage(data.lastReadMessageOtherUser));
+  });
 });
 
 export default socket;

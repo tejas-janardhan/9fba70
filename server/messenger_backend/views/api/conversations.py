@@ -14,7 +14,8 @@ class Conversations(APIView):
     TODO: for scalability, implement lazy loading,"""
 
     def put(self, request: Request):
-        if request.user.is_anonymous:
+        user = get_user(request)
+        if user.is_anonymous:
             return HttpResponse(status=401)
 
         conversation_id = request.data.get("conversationId")
@@ -23,7 +24,7 @@ class Conversations(APIView):
             Prefetch("messages", queryset=Message.objects.order_by("createdAt"))
         ).get(id=conversation_id)
 
-        last_read_message = conversation.set_latest_read_message(request.user.id)  # Sets and returns the message too.
+        last_read_message = conversation.set_latest_read_message(user.id)  # Sets and returns the message too.
 
         response_dict = {
             "lastReadMessageOtherUser": Message.get_none_or_dict(last_read_message)

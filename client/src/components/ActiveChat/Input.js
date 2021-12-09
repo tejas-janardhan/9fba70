@@ -7,14 +7,14 @@ import { postMessage } from "../../store/utils/thunkCreators";
 const useStyles = makeStyles(() => ({
   root: {
     justifySelf: "flex-end",
-    marginTop: 15
+    marginTop: 15,
   },
   input: {
     height: 70,
     backgroundColor: "#F4F6FA",
     borderRadius: 8,
-    marginBottom: 20
-  }
+    marginBottom: 20,
+  },
 }));
 
 const Input = (props) => {
@@ -33,7 +33,7 @@ const Input = (props) => {
       text: event.target.text.value,
       recipientId: otherUser.id,
       conversationId,
-      sender: conversationId ? null : user
+      sender: conversationId ? null : user,
     };
     await postMessage(reqBody);
     setText("");

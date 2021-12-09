@@ -14,14 +14,14 @@ const useStyles = makeStyles(() => ({
     letterSpacing: 0,
     display: "flex",
     justifyContent: "center",
-    marginBottom: 20
+    marginBottom: 20,
   },
   input: {
     "&::placeholder": {
       color: "#ADC0DE",
-      opacity: 1
-    }
-  }
+      opacity: 1,
+    },
+  },
 }));
 
 const Search = (props) => {
@@ -45,7 +45,8 @@ const Search = (props) => {
             <InputAdornment position="start">
               <SearchIcon />
             </InputAdornment>
-          }></FilledInput>
+          }
+        ></FilledInput>
       </FormControl>
     </form>
   );

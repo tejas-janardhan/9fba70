@@ -4,9 +4,10 @@ import {
   gotConversations,
   addConversation,
   setNewMessage,
-  setSearchedUsers,
+  setSearchedUsers, setConversationRead, incrementUnreadMessageCount,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
+import store from "../index";
 
 axios.interceptors.request.use(async function (config) {
   const token = await localStorage.getItem("messenger-token");
@@ -88,6 +89,7 @@ const sendMessage = (data, body) => {
     message: data.message,
     recipientId: body.recipientId,
     sender: data.sender,
+    isNewConversation: !body.conversationId,
   });
 };
 
@@ -117,3 +119,22 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
     console.error(error);
   }
 };
+
+export const putConversationRead = (conversationId) => async (dispatch) => {
+  const { data } = await axios.put('api/conversations', { conversationId })
+  dispatch(setConversationRead(conversationId));
+  socket.emit("conversation-read", data.lastReadMessageOtherUser)
+}
+
+export const processIncomingMessage = (activeConversation, message, sender, isNewConversation) => async (dispatch) => {
+    dispatch(setNewMessage(message, isNewConversation?sender:null));
+    if(!isNewConversation){
+      if(activeConversation === sender.username){
+      const { data } = await axios.put('api/conversations', { conversationId: message.conversationId })
+      socket.emit("conversation-read", data.lastReadMessageOtherUser)
+    } else {
+      store.dispatch(incrementUnreadMessageCount(message.conversationId))
+    }
+    }
+
+}

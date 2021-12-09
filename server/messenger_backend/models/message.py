@@ -1,5 +1,5 @@
 from django.db import models
-
+from typing import List
 from . import utils
 from .conversation import Conversation
 
@@ -16,3 +16,9 @@ class Message(utils.CustomModel):
     )
     createdAt = models.DateTimeField(auto_now_add=True, db_index=True)
     updatedAt = models.DateTimeField(auto_now=True)
+
+    @staticmethod
+    def get_none_or_dict(message, message_fields: List[str] = None):
+        if message is not None:
+            message = message.to_dict(message_fields)
+        return message

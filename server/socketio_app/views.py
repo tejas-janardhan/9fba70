@@ -6,7 +6,7 @@ import socketio
 from online_users import online_users
 
 basedir = os.path.dirname(os.path.realpath(__file__))
-sio = socketio.Server(async_mode=async_mode, logger=False)
+sio = socketio.Server(async_mode=async_mode, logger=False, cors_allowed_origins=[])
 thread = None
 
 
@@ -26,9 +26,17 @@ def go_online(sid, user_id):
 def new_message(sid, message):
     sio.emit(
         "new-message",
-        {"message": message["message"], "sender": message["sender"]},
+        {"message": message["message"], "sender": message["sender"], "isNewConversation": message["isNewConversation"]},
         skip_sid=sid,
     )
+
+
+@sio.on("conversation-read")
+def read_message(sid, last_read_message_other_user):
+    sio.emit("conversation-read",
+             {"lastReadMessageOtherUser": last_read_message_other_user},
+             skip_sid=sid
+             )
 
 
 @sio.on("logout")

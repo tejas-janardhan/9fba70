@@ -8,19 +8,25 @@ from .user import User
 class GroupConversationThroughModel(models.Model):
     date_joined = models.DateTimeField(auto_now_add=True)
     last_read_message = models.ForeignKey(
-        "GroupMessage", on_delete=models.SET_NULL, null=True, default=None, related_name="+"
+        "GroupMessage",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
+        related_name="+",
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    conversation = models.ForeignKey('GroupConversation', on_delete=models.CASCADE)
+    conversation = models.ForeignKey("GroupConversation", on_delete=models.CASCADE)
 
 
 class GroupConversation(utils.CustomModel):
-    users = models.ManyToManyField(User,
-                                   related_name='conversations',
-                                   through=GroupConversationThroughModel,
-                                   through_fields=('conversation', 'user'))
+    users = models.ManyToManyField(
+        User,
+        related_name="conversations",
+        through=GroupConversationThroughModel,
+        through_fields=("conversation", "user"),
+    )
 
-    user_admins = models.ManyToManyField(User, related_name='+')
+    user_admins = models.ManyToManyField(User, related_name="+")
 
     createdAt = models.DateTimeField(auto_now_add=True, db_index=True)
     updatedAt = models.DateTimeField(auto_now=True)
@@ -69,21 +75,17 @@ class Conversation(utils.CustomModel):
                 if reachedLastMessage:
                     message_count += 1
                 else:
-                    reachedLastMessage = (message["id"] == last_read_message.id)
+                    reachedLastMessage = message["id"] == last_read_message.id
 
         return message_count
 
     def set_latest_read_message(self, user_id):
         last_read_message = None
         if self.user1 and self.user1.id == user_id:
-            last_read_message = self.messages.filter(
-                senderId=self.user2.id
-            ).last()
+            last_read_message = self.messages.filter(senderId=self.user2.id).last()
             self.last_read_message_user1 = last_read_message
         elif self.user2 and self.user2.id == user_id:
-            last_read_message = self.messages.filter(
-                senderId=self.user1.id
-            ).last()
+            last_read_message = self.messages.filter(senderId=self.user1.id).last()
             self.last_read_message_user2 = last_read_message
 
         self.save()

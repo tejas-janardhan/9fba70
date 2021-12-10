@@ -5,6 +5,27 @@ from . import utils
 from .user import User
 
 
+class GroupConversationThroughModel(models.Model):
+    date_joined = models.DateTimeField(auto_now_add=True)
+    last_read_message = models.ForeignKey(
+        "GroupMessage", on_delete=models.SET_NULL, null=True, default=None, related_name="+"
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    conversation = models.ForeignKey('GroupConversation', on_delete=models.CASCADE)
+
+
+class GroupConversation(utils.CustomModel):
+    users = models.ManyToManyField(User,
+                                   related_name='conversations',
+                                   through=GroupConversationThroughModel,
+                                   through_fields=('conversation', 'user'))
+
+    user_admins = models.ManyToManyField(User, related_name='+')
+
+    createdAt = models.DateTimeField(auto_now_add=True, db_index=True)
+    updatedAt = models.DateTimeField(auto_now=True)
+
+
 class Conversation(utils.CustomModel):
     user1 = models.ForeignKey(
         User, on_delete=models.CASCADE, db_column="user1Id", related_name="+"

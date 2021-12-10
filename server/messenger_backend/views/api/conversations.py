@@ -24,7 +24,9 @@ class Conversations(APIView):
             Prefetch("messages", queryset=Message.objects.order_by("createdAt"))
         ).get(id=conversation_id)
 
-        last_read_message = conversation.set_latest_read_message(user.id)  # Sets and returns the message too.
+        last_read_message = conversation.set_latest_read_message(
+            user.id
+        )  # Sets and returns the message too.
 
         response_dict = {
             "lastReadMessageOtherUser": Message.get_none_or_dict(last_read_message)
@@ -41,10 +43,10 @@ class Conversations(APIView):
 
         conversations = (
             Conversation.objects.filter(Q(user1=user_id) | Q(user2=user_id))
-                .prefetch_related(
+            .prefetch_related(
                 Prefetch("messages", queryset=Message.objects.order_by("createdAt"))
             )
-                .all()
+            .all()
         )
 
         conversations_response = []

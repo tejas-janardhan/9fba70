@@ -19,6 +19,8 @@ class GroupConversationThroughModel(models.Model):
 
 
 class GroupConversation(utils.CustomModel):
+    name = models.CharField(max_length=50)
+
     users = models.ManyToManyField(
         User,
         related_name="conversations",

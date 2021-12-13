@@ -52,7 +52,7 @@ const ChatContent = (props) => {
           {latestMessageText}
         </Typography>
       </Box>
-      {unreadMessageCount > 0 ? (
+      {unreadMessageCount > 0 && (
         <Chip
           item
           label={unreadMessageCount}
@@ -60,7 +60,7 @@ const ChatContent = (props) => {
           color={"primary"}
           className={classes.chip}
         />
-      ) : null}
+      )}
     </Grid>
   );
 };

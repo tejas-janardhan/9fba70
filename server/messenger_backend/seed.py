@@ -29,20 +29,14 @@ def seed():
     santiagoConvo.save()
 
     messages = Message(
-        conversation=santiagoConvo, senderId=santiago.id, text="Where are you from?"
+        conversation=santiagoConvo, senderId=santiago.id, text="Where are you from?", read=True
     )
     messages.save()
-
-    santiagoConvo.last_read_message_user1 = messages
-    santiagoConvo.save()
 
     messages = Message(
-        conversation=santiagoConvo, senderId=thomas.id, text="I'm from New York"
+        conversation=santiagoConvo, senderId=thomas.id, text="I'm from New York", read=True
     )
     messages.save()
-
-    santiagoConvo.last_read_message_user2 = messages
-    santiagoConvo.save()
 
     messages = Message(
         conversation=santiagoConvo,
@@ -80,12 +74,9 @@ def seed():
 
     for i in range(10):
         messages = Message(
-            conversation=hualingConvo, senderId=hualing.id, text="a test message"
+            conversation=hualingConvo, senderId=hualing.id, text="a test message", read=i <= 5
         )
         messages.save()
-        if i == 5:
-            hualingConvo.last_read_message_user2 = messages
-            hualingConvo.save()
 
     messages = Message(conversation=hualingConvo, senderId=hualing.id, text="😂 😂 😂")
     messages.save()

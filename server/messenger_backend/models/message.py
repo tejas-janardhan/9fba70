@@ -14,6 +14,7 @@ class Message(utils.CustomModel):
         related_name="messages",
         related_query_name="message",
     )
+    read = models.BooleanField(default=False)
     createdAt = models.DateTimeField(auto_now_add=True, db_index=True)
     updatedAt = models.DateTimeField(auto_now=True)
 

@@ -36,10 +36,7 @@ class Conversations(APIView):
 
         conversation.messages.filter(senderId=other_user.id).update(read=True)
 
-        response_dict = {
-            "lastReadMessageOtherUser": Message.get_none_or_dict(
-                conversation.messages.filter(senderId=other_user.id).last())
-        }
+        response_dict = {'status': "success"}
 
         return JsonResponse(response_dict)
 
@@ -60,7 +57,7 @@ class Conversations(APIView):
 
         conversations_response = []
 
-        message_fields = ["id", "text", "senderId", "createdAt"]
+        message_fields = ["id", "text", "senderId", "createdAt", "read"]
 
         for convo in conversations:
             convo_dict = {
@@ -78,14 +75,8 @@ class Conversations(APIView):
 
             if convo.user1 and convo.user1.id != user_id:
                 convo_dict["otherUser"] = convo.user1.to_dict(user_fields)
-                convo_dict["lastReadMessageOtherUser"] = Message.get_none_or_dict(
-                    convo.messages.filter(senderId=convo.user2.id, read=True).last(), message_fields
-                )
             elif convo.user2 and convo.user2.id != user_id:
                 convo_dict["otherUser"] = convo.user2.to_dict(user_fields)
-                convo_dict["lastReadMessageOtherUser"] = Message.get_none_or_dict(
-                    convo.messages.filter(senderId=convo.user1.id, read=True).last(), message_fields
-                )
 
             # set property for online status of the other user
             if convo_dict["otherUser"]["id"] in online_users:

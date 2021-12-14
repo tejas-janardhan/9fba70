@@ -109,14 +109,19 @@ export const increaseUnreadMessageCountInStore = (
   });
 };
 
-export const updateLastReadMessageInStore = (
-  state,
-  lastReadMessageOtherUser
-) => {
+export const updateReadMessageInStore = (state, conversationId, userId) => {
   return state.map((convo) => {
-    if (convo.id === lastReadMessageOtherUser.conversationId) {
+    if (convo.id === conversationId) {
       const convoCopy = { ...convo };
-      convoCopy.lastReadMessageOtherUser = lastReadMessageOtherUser;
+      convoCopy.messages = convoCopy.messages.map((message) => {
+        if (message.senderId === userId) {
+          const newMessage = { ...message };
+          newMessage.read = true;
+          return newMessage;
+        } else {
+          return message;
+        }
+      });
       return convoCopy;
     } else {
       return convo;

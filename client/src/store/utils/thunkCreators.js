@@ -5,8 +5,8 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
-  setConversationRead,
   incrementUnreadMessageCount,
+  resetUnreadMessageCount,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 import store from "../index";
@@ -123,9 +123,9 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 };
 
 export const putConversationRead = (conversationId) => async (dispatch) => {
-  const { data } = await axios.put("api/conversations", { conversationId });
-  dispatch(setConversationRead(conversationId));
-  socket.emit("conversation-read", data.lastReadMessageOtherUser);
+  await axios.put("api/conversations", { conversationId });
+  dispatch(resetUnreadMessageCount(conversationId));
+  socket.emit("conversation-read", conversationId);
 };
 
 export const processIncomingMessage =
@@ -134,10 +134,10 @@ export const processIncomingMessage =
     dispatch(setNewMessage(message, isNewConversation ? sender : null));
     if (!isNewConversation) {
       if (activeConversation === sender.username) {
-        const { data } = await axios.put("api/conversations", {
+        await axios.put("api/conversations", {
           conversationId: message.conversationId,
         });
-        socket.emit("conversation-read", data.lastReadMessageOtherUser);
+        socket.emit("conversation-read", message.conversationId);
       } else {
         store.dispatch(incrementUnreadMessageCount(message.conversationId));
       }

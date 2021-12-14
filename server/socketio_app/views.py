@@ -36,10 +36,10 @@ def new_message(sid, message):
 
 
 @sio.on("conversation-read")
-def read_message(sid, last_read_message_other_user):
+def read_message(sid, conversation_id):
     sio.emit(
         "conversation-read",
-        {"lastReadMessageOtherUser": last_read_message_other_user},
+        {"conversationId": conversation_id },
         skip_sid=sid,
     )
 

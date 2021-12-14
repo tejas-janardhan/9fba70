@@ -3,7 +3,7 @@ import store from "./store";
 import {
   removeOfflineUser,
   addOnlineUser,
-  setLastReadMessage,
+  setUnreadMessageToRead,
 } from "./store/conversations";
 import { processIncomingMessage } from "./store/utils/thunkCreators";
 
@@ -29,7 +29,9 @@ socket.on("connect", () => {
     );
   });
   socket.on("conversation-read", (data) => {
-    store.dispatch(setLastReadMessage(data.lastReadMessageOtherUser));
+    store.dispatch(
+      setUnreadMessageToRead(data.conversationId, store.getState().user.id)
+    );
   });
 });
 

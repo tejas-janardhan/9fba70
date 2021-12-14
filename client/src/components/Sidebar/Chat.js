@@ -49,8 +49,8 @@ const mapDispatchToProps = (dispatch) => {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
     },
-    putConversationRead: (conversationId) => {
-      dispatch(putConversationRead(conversationId));
+    putConversationRead: (conversationId, userId) => {
+      dispatch(putConversationRead(conversationId, userId));
     },
   };
 };

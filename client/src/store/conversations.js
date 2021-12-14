@@ -5,7 +5,7 @@ import {
   removeOfflineUserFromStore,
   addMessageToStore,
   resetUnreadMessageCountInStore,
-  updateLastReadMessageInStore,
+  updateReadMessageInStore,
   increaseUnreadMessageCountInStore,
 } from "./utils/reducerFunctions";
 
@@ -18,8 +18,8 @@ const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
-const SET_CONVERSATION_READ = "SET_CONVERSATION_READ";
-const SET_LAST_READ_MESSAGE = "SET_LAST_READ_MESSAGE";
+const RESET_UNREAD_MESSAGE_COUNT = "RESET_UNREAD_MESSAGE_COUNT";
+const SET_UNREAD_MESSAGE_TO_READ = "SET_UNREAD_MESSAGE_TO_READ";
 const INC_UNREAD_MESSAGE_COUNT = "INC_UNREAD_MESSAGE_COUNT";
 
 // ACTION CREATORS
@@ -73,17 +73,17 @@ export const addConversation = (recipientId, newMessage) => {
   };
 };
 
-export const setConversationRead = (conversationId) => {
+export const resetUnreadMessageCount = (conversationId) => {
   return {
-    type: SET_CONVERSATION_READ,
+    type: RESET_UNREAD_MESSAGE_COUNT,
     conversationId,
   };
 };
 
-export const setLastReadMessage = (lastReadMessageOtherUser) => {
+export const setUnreadMessageToRead = (conversationId, userId) => {
   return {
-    type: SET_LAST_READ_MESSAGE,
-    lastReadMessageOtherUser,
+    type: SET_UNREAD_MESSAGE_TO_READ,
+    payload: { conversationId, userId },
   };
 };
 
@@ -118,12 +118,13 @@ const reducer = (state = [], action) => {
         action.payload.recipientId,
         action.payload.newMessage
       );
-    case SET_CONVERSATION_READ:
+    case RESET_UNREAD_MESSAGE_COUNT:
       return resetUnreadMessageCountInStore(state, action.conversationId);
-    case SET_LAST_READ_MESSAGE:
-      return updateLastReadMessageInStore(
+    case SET_UNREAD_MESSAGE_TO_READ:
+      return updateReadMessageInStore(
         state,
-        action.lastReadMessageOtherUser
+        action.payload.conversationId,
+        action.payload.userId
       );
     case INC_UNREAD_MESSAGE_COUNT:
       return increaseUnreadMessageCountInStore(state, 1, action.conversationId);

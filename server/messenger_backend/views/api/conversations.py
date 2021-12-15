@@ -1,5 +1,5 @@
 from django.contrib.auth.middleware import get_user
-from django.db.models import Max, Q
+from django.db.models import Q
 from django.db.models.query import Prefetch
 from django.http import HttpResponse, JsonResponse
 from messenger_backend.models import Conversation, Message
@@ -11,59 +11,89 @@ from rest_framework.request import Request
 class Conversations(APIView):
     """get all conversations for a user, include latest message text for preview, and all messages
     include other user model so we have info on username/profile pic (don't include current user info)
-    TODO: for scalability, implement lazy loading"""
+    TODO: for scalability, implement lazy loading,"""
+
+    def put(self, request: Request):
+        user = get_user(request)
+
+        if user.is_anonymous:
+            return HttpResponse(status=401)
+
+        conversation_id = request.data.get("conversationId")
+
+        conversation = Conversation.objects.prefetch_related(
+            Prefetch("messages", queryset=Message.objects.order_by("createdAt"))
+        ).get(id=conversation_id)
+
+        if user != conversation.user1 and user != conversation.user2:
+            return HttpResponse(status=401)
+
+        other_user = None
+        if user == conversation.user1:
+            other_user = conversation.user2
+        elif user == conversation.user2:
+            other_user = conversation.user1
+
+        conversation.messages.filter(senderId=other_user.id).update(read=True)
+
+        response_dict = {'status': "success"}
+
+        return JsonResponse(response_dict)
 
     def get(self, request: Request):
-        try:
-            user = get_user(request)
+        user = get_user(request)
 
-            if user.is_anonymous:
-                return HttpResponse(status=401)
-            user_id = user.id
+        if user.is_anonymous:
+            return HttpResponse(status=401)
+        user_id = user.id
 
-            conversations = (
-                Conversation.objects.filter(Q(user1=user_id) | Q(user2=user_id))
+        conversations = (
+            Conversation.objects.filter(Q(user1=user_id) | Q(user2=user_id))
                 .prefetch_related(
-                    Prefetch("messages", queryset=Message.objects.order_by("createdAt"))
-                )
+                Prefetch("messages", queryset=Message.objects.order_by("createdAt"))
+            )
                 .all()
-            )
+        )
 
-            conversations_response = []
+        conversations_response = []
 
-            for convo in conversations:
-                convo_dict = {
-                    "id": convo.id,
-                    "messages": [
-                        message.to_dict(["id", "text", "senderId", "createdAt"])
-                        for message in convo.messages.all()
-                    ],
-                }
+        message_fields = ["id", "text", "senderId", "createdAt", "read"]
 
-                # set properties for notification count and latest message preview
-                convo_dict["latestMessageText"] = convo_dict["messages"][-1]["text"]
+        for convo in conversations:
+            convo_dict = {
+                "id": convo.id,
+                "messages": [
+                    message.to_dict(message_fields) for message in convo.messages.all()
+                ],
+            }
 
-                # set a property "otherUser" so that frontend will have easier access
-                user_fields = ["id", "username", "photoUrl"]
-                if convo.user1 and convo.user1.id != user_id:
-                    convo_dict["otherUser"] = convo.user1.to_dict(user_fields)
-                elif convo.user2 and convo.user2.id != user_id:
-                    convo_dict["otherUser"] = convo.user2.to_dict(user_fields)
+            # set properties for notification count and latest message preview
+            convo_dict["latestMessageText"] = convo_dict["messages"][-1]["text"]
 
-                # set property for online status of the other user
-                if convo_dict["otherUser"]["id"] in online_users:
-                    convo_dict["otherUser"]["online"] = True
-                else:
-                    convo_dict["otherUser"]["online"] = False
+            # set a property "otherUser" so that frontend will have easier access
+            user_fields = ["id", "username", "photoUrl"]
 
-                conversations_response.append(convo_dict)
-            conversations_response.sort(
-                key=lambda convo: convo["messages"][-1]["createdAt"],
-                reverse=True,
-            )
-            return JsonResponse(
-                conversations_response,
-                safe=False,
-            )
-        except Exception as e:
-            return HttpResponse(status=500)
+            if convo.user1 and convo.user1.id != user_id:
+                convo_dict["otherUser"] = convo.user1.to_dict(user_fields)
+            elif convo.user2 and convo.user2.id != user_id:
+                convo_dict["otherUser"] = convo.user2.to_dict(user_fields)
+
+            # set property for online status of the other user
+            if convo_dict["otherUser"]["id"] in online_users:
+                convo_dict["otherUser"]["online"] = True
+            else:
+                convo_dict["otherUser"]["online"] = False
+
+            convo_dict["unreadMessageCount"] = convo.messages.filter(senderId=convo_dict['otherUser']['id'],
+                                                                     read=False).count()
+
+            conversations_response.append(convo_dict)
+
+        conversations_response.sort(
+            key=lambda convo: convo["messages"][-1]["createdAt"],
+            reverse=True,
+        )
+        return JsonResponse(
+            conversations_response,
+            safe=False,
+        )
